@@ -3,11 +3,11 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
+	"path/filepath"
 	"time"
 
 	"log"
-	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/google/generative-ai-go/genai"
@@ -31,48 +31,51 @@ func (config *Config) chat(prompt string) {
 	}
 	formattedResponse := formatResponse(resp)
 	log.Println(formattedResponse)
-
 	if config.SAVE {
-		// Create the "chats" directory if it doesn't exist
+		saveChat(formattedResponse)
+	}
+	// return formattedContent
+}
 
-		chatsDir := filepath.Join(config.WD, "chats")
-		if _, err := os.Stat(chatsDir); os.IsNotExist(err) {
-			os.MkdirAll(chatsDir, 0755)
-		}
-
-		currentTime := time.Now().UTC()
-
-		// Format the current time to display just the date
-		currentDate := currentTime.Format("2006-01-02")
-		currentchatsdir := filepath.Join(chatsDir, currentDate)
-		if _, err := os.Stat(currentchatsdir); os.IsNotExist(err) {
-			os.MkdirAll(currentchatsdir, 0755)
-		}
-		// Get the first 40 words of the response
-		words := strings.Split(formattedResponse, " ")
-		var first10Words string
-		if len(words) > 10 {
-			first10Words = strings.Join(words[:10], " ")
-		} else {
-			first10Words = strings.Join(words, " ")
-		}
-
-		// Construct the file name using the prompt
-		fileName := fmt.Sprintf("%s.md", first10Words)
-
-		// Write the first 40 words to the file
-
-		filePath := filepath.Join(currentchatsdir, fileName)
-		if err := os.WriteFile(filePath, []byte(formattedResponse), 0644); err != nil {
-			// Handle the error appropriately (log, panic, etc.)
-			log.Println("Error saving chat:", err)
-			return
-		}
-		log.Println("Chat saved")
+func saveChat(formattedResponse string) {
+	homedir, err := os.UserHomeDir()
+	if err != nil {
+		log.Println("cant save chat, error getting homedir ")
+		return
 
 	}
 
-	// return formattedContent
+	currentTime := time.Now().UTC()
+	// Format the current time to display just the date
+	currentDate := currentTime.Format("2006-01-02")
+	currentchatsdir := fmt.Sprintf("%s/gochat/data/chats/%s", homedir, currentDate)
+	if _, err := os.Stat(currentchatsdir); os.IsNotExist(err) {
+		if err := os.MkdirAll(currentchatsdir, 0755); err != nil {
+			log.Fatalf("Error creating directory: %s", err)
+		}
+	}
+
+	// Get the first 40 words of the response
+	words := strings.Split(formattedResponse, " ")
+	var first10Words string
+	if len(words) > 10 {
+		first10Words = strings.Join(words[:10], " ")
+	} else {
+		first10Words = strings.Join(words, " ")
+	}
+
+	// Construct the file name using the prompt
+	fileName := fmt.Sprintf("%s.md", first10Words)
+
+	// Write the words to the file
+
+	filePath := filepath.Join(currentchatsdir, fileName)
+	if err := os.WriteFile(filePath, []byte(formattedResponse), 0644); err != nil {
+		log.Println("Error saving chat:", err)
+		return
+	}
+	log.Printf("Chat saved at : %v", currentchatsdir)
+
 }
 
 func formatResponse(resp *genai.GenerateContentResponse) string {
