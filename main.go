@@ -19,6 +19,9 @@ type Config struct {
 func main() {
 	err := godotenv.Load()
 	if err != nil {
+		if strings.Contains(err.Error(), "no such file or directory") {
+			log.Println("You do not have an .env file in this dir, make sure your linux enviroment have GEMINI_API_KEY exported, or create an env file ")
+		}
 		log.Println(err)
 	}
 	wd, err := os.Getwd()

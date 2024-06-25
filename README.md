@@ -18,6 +18,9 @@ Use Gemini from your terminal
     # install this package from github with go ```go install github.com/muhammadolammi/gochat@latest```
     # Now run ```gochat```
 
+    #You can create an .env file alternatively in working directly , to manage your enviromnet variables.
 
 
 
+# Incoming Features
+    # Enable history
