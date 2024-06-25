@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"log"
 	"os"
@@ -33,20 +34,35 @@ func (config *Config) chat(prompt string) {
 
 	if config.SAVE {
 		// Create the "chats" directory if it doesn't exist
+
 		chatsDir := filepath.Join(config.WD, "chats")
 		if _, err := os.Stat(chatsDir); os.IsNotExist(err) {
 			os.MkdirAll(chatsDir, 0755)
 		}
 
+		currentTime := time.Now().UTC()
+
+		// Format the current time to display just the date
+		currentDate := currentTime.Format("2006-01-02")
+		currentchatsdir := filepath.Join(chatsDir, currentDate)
+		if _, err := os.Stat(currentchatsdir); os.IsNotExist(err) {
+			os.MkdirAll(currentchatsdir, 0755)
+		}
 		// Get the first 40 words of the response
 		words := strings.Split(formattedResponse, " ")
-		first10Words := strings.Join(words[:10], " ")
+		var first10Words string
+		if len(words) > 10 {
+			first10Words = strings.Join(words[:10], " ")
+		} else {
+			first10Words = strings.Join(words, " ")
+		}
 
 		// Construct the file name using the prompt
 		fileName := fmt.Sprintf("%s.md", first10Words)
 
 		// Write the first 40 words to the file
-		filePath := filepath.Join(chatsDir, fileName)
+
+		filePath := filepath.Join(currentchatsdir, fileName)
 		if err := os.WriteFile(filePath, []byte(formattedResponse), 0644); err != nil {
 			// Handle the error appropriately (log, panic, etc.)
 			log.Println("Error saving chat:", err)
