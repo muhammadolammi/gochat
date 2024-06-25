@@ -4,6 +4,7 @@ Use Gemini from your terminal
 # Features
     # A gemini chat from terminal.
     # Saves time from going online everytime or to chatgpt
+    # All chats are saved at "./chats", i.e your working dir /chats
 
 
 # Usage 

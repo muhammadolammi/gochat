@@ -28,26 +28,29 @@ func (config *Config) chat(prompt string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	formattedContent := formatResponse(resp)
+	formattedResponse := formatResponse(resp)
+	log.Println(formattedResponse)
 
-	// Create the "chats" directory if it doesn't exist
-	chatsDir := filepath.Join(config.WD, "chats")
-	if _, err := os.Stat(chatsDir); os.IsNotExist(err) {
-		os.MkdirAll(chatsDir, 0755)
-	}
+	if config.SAVE {
+		// Create the "chats" directory if it doesn't exist
+		chatsDir := filepath.Join(config.WD, "chats")
+		if _, err := os.Stat(chatsDir); os.IsNotExist(err) {
+			os.MkdirAll(chatsDir, 0755)
+		}
 
-	// Get the first 40 words of the response
-	words := strings.Split(formattedContent, " ")
-	first10Words := strings.Join(words[:10], " ")
+		// Get the first 40 words of the response
+		words := strings.Split(formattedResponse, " ")
+		first10Words := strings.Join(words[:10], " ")
 
-	// Construct the file name using the prompt
-	fileName := fmt.Sprintf("%s.md", first10Words)
+		// Construct the file name using the prompt
+		fileName := fmt.Sprintf("%s.md", first10Words)
 
-	// Write the first 40 words to the file
-	filePath := filepath.Join(chatsDir, fileName)
-	if err := os.WriteFile(filePath, []byte(formattedContent), 0644); err != nil {
-		// Handle the error appropriately (log, panic, etc.)
-		fmt.Println("Error writing to file:", err)
+		// Write the first 40 words to the file
+		filePath := filepath.Join(chatsDir, fileName)
+		if err := os.WriteFile(filePath, []byte(formattedResponse), 0644); err != nil {
+			// Handle the error appropriately (log, panic, etc.)
+			fmt.Println("Error writing to file:", err)
+		}
 	}
 
 	// return formattedContent

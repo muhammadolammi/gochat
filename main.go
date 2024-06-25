@@ -13,6 +13,7 @@ import (
 type Config struct {
 	API_KEY string
 	WD      string
+	SAVE    bool
 }
 
 func main() {
@@ -31,9 +32,16 @@ func main() {
 		return
 
 	}
+
+	savegochatstr := os.Getenv("SAVE_GO_CHAT")
+	savegochat := false
+	if savegochatstr == "true" {
+		savegochat = true
+	}
 	config := Config{
 		API_KEY: apiKey,
 		WD:      wd,
+		SAVE:    savegochat,
 	}
 	fmt.Println("Welcome to GOCHAT, Your low budget copilot :) ...... ")
 	scanner := bufio.NewScanner(os.Stdin)
