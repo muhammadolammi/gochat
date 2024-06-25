@@ -1,5 +1,6 @@
 package main
 
+// Main version
 import (
 	"bufio"
 	"fmt"
