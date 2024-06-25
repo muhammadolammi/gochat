@@ -49,8 +49,11 @@ func (config *Config) chat(prompt string) {
 		filePath := filepath.Join(chatsDir, fileName)
 		if err := os.WriteFile(filePath, []byte(formattedResponse), 0644); err != nil {
 			// Handle the error appropriately (log, panic, etc.)
-			fmt.Println("Error writing to file:", err)
+			log.Println("Error saving chat:", err)
+			return
 		}
+		log.Println("Chat saved")
+
 	}
 
 	// return formattedContent

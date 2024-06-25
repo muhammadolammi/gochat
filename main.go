@@ -58,7 +58,6 @@ func main() {
 		prompt := cleaned
 
 		config.chat(prompt)
-		log.Println("Chat generate")
 
 	}
 }
