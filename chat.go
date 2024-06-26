@@ -27,7 +27,7 @@ func (config *Config) chat(prompt string) {
 	model := client.GenerativeModel("gemini-1.5-flash")
 	resp, err := model.GenerateContent(ctx, genai.Text(prompt))
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 	formattedResponse := formatResponse(resp)
 	log.Println(formattedResponse)
